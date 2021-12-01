@@ -1,13 +1,73 @@
-import { Alert, Button, List } from '@arco-design/web-react';
+import { Alert, Button, List, Space } from '@arco-design/web-react';
 import '@arco-design/web-react/dist/css/arco.css';
 import { Meta } from '@storybook/react';
-import React, { useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Modal, ModalComponentProps } from '../src';
 
+export const Default = () => {
+  const modalRef = useRef<Modal>(null);
+  const onShowClick = useCallback(async () => {
+    await modalRef.current?.show({
+      title: '路由表更新失败！',
+      content: '路由表包含无效的路由转发策略公网网关的网络',
+    });
+  }, []);
+  const onConfirmClick = useCallback(async () => {
+    await modalRef.current?.confirm({
+      title: '路由表更新失败！',
+      content: '路由表包含无效的路由转发策略公网网关的网络',
+    });
+  }, []);
+  const onInfoClick = useCallback(async () => {
+    await modalRef.current?.info({
+      title: '路由表更新失败！',
+      content: '路由表包含无效的路由转发策略公网网关的网络',
+    });
+  }, []);
+  const onSuccessClick = useCallback(async () => {
+    await modalRef.current?.success({
+      title: '路由表更新失败！',
+      content: '路由表包含无效的路由转发策略公网网关的网络',
+    });
+  }, []);
+  const onWarningClick = useCallback(async () => {
+    await modalRef.current?.warning({
+      title: '路由表更新失败！',
+      content: '路由表包含无效的路由转发策略公网网关的网络',
+    });
+  }, []);
+  const onErrorClick = useCallback(async () => {
+    await modalRef.current?.error({
+      title: '路由表更新失败！',
+      content: '路由表包含无效的路由转发策略公网网关的网络',
+    });
+  }, []);
+  return (
+    <>
+      <Space style={{ padding: 16 }}>
+        <Button onClick={onShowClick}>show</Button>
+        <Button onClick={onConfirmClick} status="warning">
+          confirm
+        </Button>
+        <Button onClick={onSuccessClick} status="success">
+          success
+        </Button>
+        <Button onClick={onInfoClick}>info</Button>
+        <Button onClick={onWarningClick} status="warning">
+          warning
+        </Button>
+        <Button onClick={onErrorClick} status="danger">
+          error
+        </Button>
+      </Space>
+      <Modal ref={modalRef} />
+    </>
+  );
+};
 export const Show = () => {
   const modalRef = useRef<Modal>(null);
   const innerRef = useRef<ModalComponentProps>(null);
-  const onClick = async () => {
+  const onClick = useCallback(async () => {
     const flag = await modalRef.current?.show(
       {
         ref: innerRef,
@@ -59,7 +119,7 @@ export const Show = () => {
       </>
     );
     console.log(`最终窗口点击了哪个按钮（可能是被 onClose 更改的）${flag}`);
-  };
+  }, []);
   return (
     <>
       <Button onClick={onClick}>自定义提示</Button>
@@ -68,8 +128,8 @@ export const Show = () => {
   );
 };
 export const Confirm = () => {
-  const modalRef = useRef<Modal>();
-  const onClick = async () => {
+  const modalRef = useRef<Modal>(null);
+  const onClick = useCallback(async () => {
     const flag = await modalRef.current?.confirm({
       title: '确认删除当前所选实例？',
       content: '删除后，该实例下的所有配置将会被清空，且无法恢复。',
@@ -85,7 +145,7 @@ export const Confirm = () => {
         title: '删除失败',
       });
     }
-  };
+  }, []);
   return (
     <>
       <Button onClick={onClick}>confirm</Button>
@@ -94,12 +154,13 @@ export const Confirm = () => {
   );
 };
 export const Info = () => {
-  const modalRef = useRef<Modal>();
-  const onClick = async () =>
+  const modalRef = useRef<Modal>(null);
+  const onClick = useCallback(async () => {
     await modalRef.current?.info({
       title: '路由表更新成功！',
       content: '配置将在 1-3 分钟内同步到集群中的路由节点',
     });
+  }, []);
   return (
     <>
       <Button onClick={onClick}>info</Button>
@@ -108,12 +169,13 @@ export const Info = () => {
   );
 };
 export const Success = () => {
-  const modalRef = useRef<Modal>();
-  const onClick = async () =>
+  const modalRef = useRef<Modal>(null);
+  const onClick = useCallback(async () => {
     await modalRef.current?.success({
       title: '路由表更新成功！',
       content: '配置将在 1-3 分钟内同步到集群中的路由节点',
     });
+  }, []);
   return (
     <>
       <Button onClick={onClick}>success</Button>
@@ -122,12 +184,13 @@ export const Success = () => {
   );
 };
 export const Warning = () => {
-  const modalRef = useRef<Modal>();
-  const onClick = async () =>
+  const modalRef = useRef<Modal>(null);
+  const onClick = useCallback(async () => {
     await modalRef.current?.warning({
       title: '路由表更新失败！',
       content: '路由表包含无效的路由转发策略公网网关的网络',
     });
+  }, []);
   return (
     <>
       <Button onClick={onClick}>warning</Button>
@@ -136,12 +199,13 @@ export const Warning = () => {
   );
 };
 export const Error = () => {
-  const modalRef = useRef<Modal>();
-  const onClick = async () =>
+  const modalRef = useRef<Modal>(null);
+  const onClick = useCallback(async () => {
     await modalRef.current?.error({
       title: '路由表更新失败！',
       content: '路由表包含无效的路由转发策略公网网关的网络',
     });
+  }, []);
   return (
     <>
       <Button onClick={onClick}>error</Button>
@@ -150,14 +214,15 @@ export const Error = () => {
   );
 };
 export const OrderedFlags = () => {
-  const modalRef = useRef<Modal>();
-  const onClick = async () =>
+  const modalRef = useRef<Modal>(null);
+  const onClick = useCallback(async () => {
     await modalRef.current?.show({
       simple: true,
       title: '路由表更新失败！',
       content: '路由表包含无效的路由转发策略公网网关的网络',
       flags: [Modal.YES, Modal.NO, Modal.OK, Modal.CANCEL],
     });
+  }, []);
   return (
     <>
       <Button onClick={onClick}>按钮排序</Button>

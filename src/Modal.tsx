@@ -64,7 +64,7 @@ const Modal = Object.assign(
   forwardRef<Modal, ModalProps>((props, ref) => {
     const keyRef = useRef(0);
     const [children, setChildren] = useState<ReactElement[]>([]);
-    const show = useCallback(
+    const open = useCallback(
       (
         modalProps?: ModalProps & ModalRefProps,
         children?: ReactNode
@@ -95,45 +95,45 @@ const Modal = Object.assign(
       ref,
       () => {
         return {
-          show,
+          show: (modalProps: ModalProps & ModalRefProps) =>
+            open({
+              flags: Flag.OK | Flag.CANCEL | Flag.CLOSE,
+              ...modalProps,
+            }),
           confirm: (modalProps: ModalProps & ModalRefProps) =>
-            show({
+            open({
               flags: Flag.OK | Flag.CANCEL | Flag.CLOSE,
               icon: <IconExclamationCircleFill />,
               simple: true,
               ...modalProps,
             }),
           info: (modalProps: ModalProps & ModalRefProps) =>
-            show({
-              flags: Flag.OK | Flag.CANCEL | Flag.CLOSE,
+            open({
               icon: <IconInfoCircleFill />,
               simple: true,
               ...modalProps,
             }),
           success: (modalProps: ModalProps & ModalRefProps) =>
-            show({
-              flags: Flag.OK,
+            open({
               icon: <IconCheckCircleFill />,
               simple: true,
               ...modalProps,
             }),
           warning: (modalProps: ModalProps & ModalRefProps) =>
-            show({
-              flags: Flag.OK,
+            open({
               icon: <IconExclamationCircleFill />,
               simple: true,
               ...modalProps,
             }),
           error: (modalProps: ModalProps & ModalRefProps) =>
-            show({
-              flags: Flag.OK,
+            open({
               icon: <IconCloseCircleFill />,
               simple: true,
               ...modalProps,
             }),
         };
       },
-      [show]
+      [open]
     );
     return <>{children}</>;
   }),
