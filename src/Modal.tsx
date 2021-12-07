@@ -24,12 +24,10 @@ interface ModalRefProps {
 }
 interface Modal {
   show(props: ModalProps & ModalRefProps, children?: ReactNode): Promise<Flag>;
-
   confirm(
     props: ModalProps & ModalRefProps,
     children?: ReactNode
   ): Promise<Flag>;
-
   info(props: ModalProps & ModalRefProps, children?: ReactNode): Promise<Flag>;
   success(
     props: ModalProps & ModalRefProps,
@@ -75,6 +73,7 @@ const Modal = Object.assign(
               key={keyRef.current++}
               {...props}
               {...modalProps}
+              children={children ?? modalProps?.children ?? props?.children}
               ref={modalProps?.ref}
               onResolve={resolve}
               onExited={() => {
@@ -82,9 +81,7 @@ const Modal = Object.assign(
                   children.filter((child) => child !== instance)
                 );
               }}
-            >
-              {children ?? modalProps?.children ?? props?.children}
-            </ModalProvider>
+            />
           );
           setChildren((children) => children.concat(instance));
         });
@@ -95,42 +92,78 @@ const Modal = Object.assign(
       ref,
       () => {
         return {
-          show: (modalProps: ModalProps & ModalRefProps) =>
-            open({
-              flags: Flag.OK | Flag.CANCEL | Flag.CLOSE,
-              ...modalProps,
-            }),
-          confirm: (modalProps: ModalProps & ModalRefProps) =>
-            open({
-              flags: Flag.OK | Flag.CANCEL | Flag.CLOSE,
-              icon: <IconExclamationCircleFill />,
-              simple: true,
-              ...modalProps,
-            }),
-          info: (modalProps: ModalProps & ModalRefProps) =>
-            open({
-              icon: <IconInfoCircleFill />,
-              simple: true,
-              ...modalProps,
-            }),
-          success: (modalProps: ModalProps & ModalRefProps) =>
-            open({
-              icon: <IconCheckCircleFill />,
-              simple: true,
-              ...modalProps,
-            }),
-          warning: (modalProps: ModalProps & ModalRefProps) =>
-            open({
-              icon: <IconExclamationCircleFill />,
-              simple: true,
-              ...modalProps,
-            }),
-          error: (modalProps: ModalProps & ModalRefProps) =>
-            open({
-              icon: <IconCloseCircleFill />,
-              simple: true,
-              ...modalProps,
-            }),
+          show: (
+            modalProps: ModalProps & ModalRefProps,
+            children?: ReactNode
+          ) =>
+            open(
+              {
+                flags: Flag.OK | Flag.CANCEL | Flag.CLOSE,
+                ...modalProps,
+              },
+              children
+            ),
+          confirm: (
+            modalProps: ModalProps & ModalRefProps,
+            children?: ReactNode
+          ) =>
+            open(
+              {
+                flags: Flag.OK | Flag.CANCEL | Flag.CLOSE,
+                icon: <IconExclamationCircleFill />,
+                simple: true,
+                ...modalProps,
+              },
+              children
+            ),
+          info: (
+            modalProps: ModalProps & ModalRefProps,
+            children?: ReactNode
+          ) =>
+            open(
+              {
+                icon: <IconInfoCircleFill />,
+                simple: true,
+                ...modalProps,
+              },
+              children
+            ),
+          success: (
+            modalProps: ModalProps & ModalRefProps,
+            children?: ReactNode
+          ) =>
+            open(
+              {
+                icon: <IconCheckCircleFill />,
+                simple: true,
+                ...modalProps,
+              },
+              children
+            ),
+          warning: (
+            modalProps: ModalProps & ModalRefProps,
+            children?: ReactNode
+          ) =>
+            open(
+              {
+                icon: <IconExclamationCircleFill />,
+                simple: true,
+                ...modalProps,
+              },
+              children
+            ),
+          error: (
+            modalProps: ModalProps & ModalRefProps,
+            children?: ReactNode
+          ) =>
+            open(
+              {
+                icon: <IconCloseCircleFill />,
+                simple: true,
+                ...modalProps,
+              },
+              children
+            ),
         };
       },
       [open]

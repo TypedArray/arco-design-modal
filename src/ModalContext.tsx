@@ -152,9 +152,10 @@ const ModalProvider = forwardRef<ModalComponentProps, Props>(function (
   );
 
   const onModalClose = useCallback(() => onFlag(Flag.CLOSE), [onFlag]);
-  const onModalExited = useCallback(async () => onExited?.(flagRef.current!), [
-    onExited,
-  ]);
+  const onModalExited = useCallback(
+    async () => onExited?.(flagRef.current!),
+    [onExited]
+  );
 
   return (
     <Provider value={modalComponentProps}>
@@ -175,7 +176,8 @@ const ModalProvider = forwardRef<ModalComponentProps, Props>(function (
         onCancel={onModalClose}
         afterClose={onModalExited}
       >
-        {content ?? children}
+        {content}
+        {children}
       </ArcoModal>
     </Provider>
   );
