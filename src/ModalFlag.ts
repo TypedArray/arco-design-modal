@@ -1,4 +1,4 @@
-enum Flag {
+enum ModalFlag {
   /**
    * 无任何选择
    */
@@ -32,4 +32,4 @@ enum Flag {
    */
   REJECT = 0x0020,
 }
-export { Flag };
+export { ModalFlag };

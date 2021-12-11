@@ -15,31 +15,40 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Flag } from './Flag';
 import { ModalComponentProps } from './ModalComponentProps';
 import { ModalProvider, ModalProviderProps } from './ModalContext';
+import { ModalFlag } from './ModalFlag';
 import { ModalProps } from './ModalProps';
 
 interface ModalRefProps {
   ref?: RefObject<ModalComponentProps>;
 }
 interface Modal {
-  show(props: ModalProps & ModalRefProps, children?: ReactNode): Promise<Flag>;
+  show(
+    props: ModalProps & ModalRefProps,
+    children?: ReactNode
+  ): Promise<ModalFlag>;
   clear(): void;
   confirm(
     props: ModalProps & ModalRefProps,
     children?: ReactNode
-  ): Promise<Flag>;
-  info(props: ModalProps & ModalRefProps, children?: ReactNode): Promise<Flag>;
+  ): Promise<ModalFlag>;
+  info(
+    props: ModalProps & ModalRefProps,
+    children?: ReactNode
+  ): Promise<ModalFlag>;
   success(
     props: ModalProps & ModalRefProps,
     children?: ReactNode
-  ): Promise<Flag>;
+  ): Promise<ModalFlag>;
   warning(
     props: ModalProps & ModalRefProps,
     children?: ReactNode
-  ): Promise<Flag>;
-  error(props: ModalProps & ModalRefProps, children?: ReactNode): Promise<Flag>;
+  ): Promise<ModalFlag>;
+  error(
+    props: ModalProps & ModalRefProps,
+    children?: ReactNode
+  ): Promise<ModalFlag>;
 }
 
 /**
@@ -70,8 +79,8 @@ const Modal = Object.assign(
       (
         modalProps: ModalProps & ModalRefProps,
         children?: ReactNode
-      ): Promise<Flag> => {
-        return new Promise<Flag>((resolve) => {
+      ): Promise<ModalFlag> => {
+        return new Promise<ModalFlag>((resolve) => {
           const instance = (
             <ModalProvider
               key={keyRef.current++}
@@ -89,20 +98,20 @@ const Modal = Object.assign(
           setElements((elements) => elements.concat(instance));
         });
       },
-      [elements]
+      []
     );
     const clear = useCallback(() => {
       elements.forEach((element) => {
-        element.props.onResolve?.(Flag.CLOSE);
+        element.props.onResolve?.(ModalFlag.CLOSE);
       });
       setElements([]);
     }, [elements]);
-    const length = useMemo(() => elements.length, [elements]);
+    const size = useMemo(() => elements.length, [elements]);
     useImperativeHandle(
       ref,
       () => {
         return {
-          length,
+          size,
           clear,
           show: (
             modalProps: ModalProps & ModalRefProps,
@@ -110,7 +119,7 @@ const Modal = Object.assign(
           ) =>
             internalShow(
               {
-                flags: Flag.OK | Flag.CANCEL | Flag.CLOSE,
+                flags: ModalFlag.OK | ModalFlag.CANCEL | ModalFlag.CLOSE,
                 ...modalProps,
               },
               children
@@ -121,7 +130,7 @@ const Modal = Object.assign(
           ) =>
             internalShow(
               {
-                flags: Flag.OK | Flag.CANCEL | Flag.CLOSE,
+                flags: ModalFlag.OK | ModalFlag.CANCEL | ModalFlag.CLOSE,
                 icon: <IconExclamationCircleFill />,
                 simple: true,
                 ...modalProps,
@@ -134,7 +143,7 @@ const Modal = Object.assign(
           ) =>
             internalShow(
               {
-                flags: Flag.OK,
+                flags: ModalFlag.OK,
                 icon: <IconInfoCircleFill />,
                 simple: true,
                 ...modalProps,
@@ -147,7 +156,7 @@ const Modal = Object.assign(
           ) =>
             internalShow(
               {
-                flags: Flag.OK,
+                flags: ModalFlag.OK,
                 icon: <IconCheckCircleFill />,
                 simple: true,
                 ...modalProps,
@@ -160,7 +169,7 @@ const Modal = Object.assign(
           ) =>
             internalShow(
               {
-                flags: Flag.OK,
+                flags: ModalFlag.OK,
                 icon: <IconExclamationCircleFill />,
                 simple: true,
                 ...modalProps,
@@ -173,7 +182,7 @@ const Modal = Object.assign(
           ) =>
             internalShow(
               {
-                flags: Flag.OK,
+                flags: ModalFlag.OK,
                 icon: <IconCloseCircleFill />,
                 simple: true,
                 ...modalProps,
@@ -182,7 +191,7 @@ const Modal = Object.assign(
             ),
         };
       },
-      [internalShow, clear, length]
+      [internalShow, clear, size]
     );
     return <>{elements}</>;
   }),
@@ -190,35 +199,35 @@ const Modal = Object.assign(
     /**
      * 无任何选择
      */
-    NONE: Flag.NONE,
+    NONE: ModalFlag.NONE,
     /**
      * 无任何选择，阻止窗口关闭
      */
-    PREVENT_DEFAULT: Flag.PREVENT_DEFAULT,
+    PREVENT_DEFAULT: ModalFlag.PREVENT_DEFAULT,
     /**
      * 点击 '是'
      */
-    YES: Flag.YES,
+    YES: ModalFlag.YES,
     /**
      * 选择 '否'
      */
-    NO: Flag.NO,
+    NO: ModalFlag.NO,
     /**
      * 选择 '确定'
      */
-    OK: Flag.OK,
+    OK: ModalFlag.OK,
     /**
      * 选择 '取消'
      */
-    CANCEL: Flag.CANCEL,
+    CANCEL: ModalFlag.CANCEL,
     /**
      * 选择 '关闭'
      */
-    CLOSE: Flag.CLOSE,
+    CLOSE: ModalFlag.CLOSE,
     /**
      * 拒绝，会附带播放 shakeX 动画
      */
-    REJECT: Flag.REJECT,
+    REJECT: ModalFlag.REJECT,
   }
 );
 export { Modal };

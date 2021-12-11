@@ -7,9 +7,9 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Flag } from './Flag';
-import { FlagButton } from './FlagButton';
 import { ModalComponentProps } from './ModalComponentProps';
+import { ModalFlag } from './ModalFlag';
+import { ModalFlagButton } from './ModalFlagButton';
 import { ModalProps } from './ModalProps';
 import { shakeX } from './shakeX';
 
@@ -23,8 +23,8 @@ export interface ModalProviderProps extends ModalProps {
   /**
    * 关闭弹窗的回调
    */
-  onResolve?: (flag: Flag) => void;
-  onExited?: (flag: Flag) => void;
+  onResolve?: (flag: ModalFlag) => void;
+  onExited?: (flag: ModalFlag) => void;
 }
 
 /**
@@ -37,7 +37,7 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
       icon,
       content,
       children,
-      flags = Flag.OK,
+      flags = ModalFlag.OK,
       yesLabel = '是',
       noLabel = '否',
       okLabel = '确定',
@@ -55,11 +55,11 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
     ref
   ) {
     const containerRef = useRef<Element>();
-    const flagRef = useRef<Flag>();
+    const flagRef = useRef<ModalFlag>();
     const [visible, setVisible] = useState<boolean>(true);
-    const [loadingFlag, setLoadingFlag] = useState(Flag.NONE);
+    const [loadingFlag, setLoadingFlag] = useState(ModalFlag.NONE);
     const onFlag = useCallback(
-      async (flag: Flag) => {
+      async (flag: ModalFlag) => {
         setLoadingFlag(flag);
         if (typeof onClose === 'function') {
           const pFlag = await onClose(flag);
@@ -68,8 +68,8 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
             flag = pFlag;
           }
         }
-        if (flag & Flag.REJECT) {
-          setLoadingFlag(Flag.NONE);
+        if (flag & ModalFlag.REJECT) {
+          setLoadingFlag(ModalFlag.NONE);
           // 拒绝后播放 shakeX 动画
           const dialog = containerRef.current?.querySelector('.arco-modal');
           await shakeX(dialog);
@@ -79,7 +79,7 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
             flagRef.current = flag;
             setVisible(false);
           }
-          setLoadingFlag(Flag.NONE);
+          setLoadingFlag(ModalFlag.NONE);
         }
       },
       [onClose, onResolve, setVisible, setLoadingFlag]
@@ -88,7 +88,7 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
     // 允许 Context 关闭弹窗
     const modalComponentProps = useMemo(
       () => ({
-        close: (flag: Flag = Flag.CLOSE) => onFlag(flag),
+        close: (flag: ModalFlag = ModalFlag.CLOSE) => onFlag(flag),
       }),
       [onFlag]
     );
@@ -98,8 +98,8 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
     const closable = useMemo(
       () =>
         Array.isArray(flags)
-          ? flags.includes(Flag.CLOSE)
-          : Boolean(flags & Flag.CLOSE),
+          ? flags.includes(ModalFlag.CLOSE)
+          : Boolean(flags & ModalFlag.CLOSE),
       [flags]
     );
     // 按钮排序
@@ -107,22 +107,28 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
       () =>
         Array.isArray(flags)
           ? flags
-          : [Flag.CANCEL, Flag.OK, Flag.NO, Flag.YES].filter(
-              (flag) => flags & flag
-            ),
+          : [
+              ModalFlag.CANCEL,
+              ModalFlag.OK,
+              ModalFlag.NO,
+              ModalFlag.YES,
+            ].filter((flag) => flags & flag),
       [flags]
     );
 
     const buttonPropsCache = useMemo(
       () =>
-        new Map<Flag, Omit<ButtonProps, 'onClick'>>([
+        new Map<ModalFlag, Omit<ButtonProps, 'onClick'>>([
           [
-            Flag.OK,
+            ModalFlag.OK,
             Object.assign({ children: okLabel, type: 'primary' }, okProps),
           ],
-          [Flag.CANCEL, Object.assign({ children: cancelLabel }, cancelProps)],
-          [Flag.YES, Object.assign({ children: yesLabel }, yesProps)],
-          [Flag.NO, Object.assign({ children: noLabel }, noProps)],
+          [
+            ModalFlag.CANCEL,
+            Object.assign({ children: cancelLabel }, cancelProps),
+          ],
+          [ModalFlag.YES, Object.assign({ children: yesLabel }, yesProps)],
+          [ModalFlag.NO, Object.assign({ children: noLabel }, noProps)],
         ]),
       [
         okLabel,
@@ -140,7 +146,7 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
         orderedFlags.map((flag) => {
           const buttonProps = buttonPropsCache.get(flag);
           return (
-            <FlagButton
+            <ModalFlagButton
               key={flag}
               {...buttonProps}
               flag={flag}
@@ -152,7 +158,7 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
       [loadingFlag, orderedFlags, buttonPropsCache]
     );
 
-    const onModalClose = useCallback(() => onFlag(Flag.CLOSE), [onFlag]);
+    const onModalClose = useCallback(() => onFlag(ModalFlag.CLOSE), [onFlag]);
     const onModalExited = useCallback(
       async () => onExited?.(flagRef.current!),
       [onExited]
@@ -170,7 +176,7 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
               {title}
             </span>
           }
-          footer={buttons}
+          footer={buttons.length > 0 ? buttons : null}
           visible={visible}
           closable={closable}
           maskClosable={maskClosable}

@@ -1,17 +1,17 @@
 import { Button, ButtonProps } from '@arco-design/web-react';
 import React, { useCallback } from 'react';
-import { Flag } from './Flag';
+import { ModalFlag } from './ModalFlag';
 
 interface Props extends Omit<ButtonProps, 'onClick'> {
-  onFlag: (flag: Flag) => void;
-  flag: Flag;
+  onFlag: (flag: ModalFlag) => void;
+  flag: ModalFlag;
 }
 
-function FlagButton({ flag, onFlag, ...props }: Props) {
+function ModalFlagButton({ flag, onFlag, ...props }: Props) {
   const onClick = useCallback(() => {
     onFlag(flag);
   }, [flag, onFlag]);
   return <Button {...props} onClick={onClick} />;
 }
 
-export { FlagButton };
+export { ModalFlagButton };
