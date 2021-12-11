@@ -28,6 +28,7 @@ interface Modal {
     props: ModalProps & ModalRefProps,
     children?: ReactNode
   ): Promise<ModalFlag>;
+  size: number;
   clear(): void;
   confirm(
     props: ModalProps & ModalRefProps,
