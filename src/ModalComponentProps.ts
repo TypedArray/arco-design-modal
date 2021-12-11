@@ -1,9 +1,9 @@
-import { Flag } from './Flag';
+import { ModalFlag } from './ModalFlag';
 
 export interface ModalComponentProps {
   /**
    * 关闭弹窗
    * @param flag
    */
-  close(flag?: Flag): Promise<void>;
+  close(flag?: ModalFlag): PromiseLike<void>;
 }

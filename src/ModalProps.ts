@@ -3,7 +3,7 @@ import {
   ModalProps as ArcoModalProps,
 } from '@arco-design/web-react';
 import { ReactNode } from 'react';
-import { Flag } from './Flag';
+import { ModalFlag } from './ModalFlag';
 
 export interface ModalProps
   extends Omit<
@@ -16,7 +16,7 @@ export interface ModalProps
   content?: ReactNode;
   children?: ReactNode;
   /** 需要展示哪些按钮 */
-  flags?: Flag | Flag[];
+  flags?: ModalFlag | ModalFlag[];
   yesLabel?: string;
   noLabel?: string;
   okLabel?: string;
@@ -28,5 +28,7 @@ export interface ModalProps
   /**
    * 点选确认/取消/是/否按钮时触发，可以返回新的 flag
    */
-  onClose?: (flag: Flag) => Flag | void | Promise<Flag | void>;
+  onClose?: (
+    flag: ModalFlag
+  ) => ModalFlag | void | PromiseLike<ModalFlag | void>;
 }

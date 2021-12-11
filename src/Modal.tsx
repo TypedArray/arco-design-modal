@@ -27,29 +27,29 @@ interface Modal {
   show(
     props: ModalProps & ModalRefProps,
     children?: ReactNode
-  ): Promise<ModalFlag>;
+  ): PromiseLike<ModalFlag>;
   size: number;
   clear(): void;
   confirm(
     props: ModalProps & ModalRefProps,
     children?: ReactNode
-  ): Promise<ModalFlag>;
+  ): PromiseLike<ModalFlag>;
   info(
     props: ModalProps & ModalRefProps,
     children?: ReactNode
-  ): Promise<ModalFlag>;
+  ): PromiseLike<ModalFlag>;
   success(
     props: ModalProps & ModalRefProps,
     children?: ReactNode
-  ): Promise<ModalFlag>;
+  ): PromiseLike<ModalFlag>;
   warning(
     props: ModalProps & ModalRefProps,
     children?: ReactNode
-  ): Promise<ModalFlag>;
+  ): PromiseLike<ModalFlag>;
   error(
     props: ModalProps & ModalRefProps,
     children?: ReactNode
-  ): Promise<ModalFlag>;
+  ): PromiseLike<ModalFlag>;
 }
 
 /**
@@ -80,7 +80,7 @@ const Modal = Object.assign(
       (
         modalProps: ModalProps & ModalRefProps,
         children?: ReactNode
-      ): Promise<ModalFlag> => {
+      ): PromiseLike<ModalFlag> => {
         return new Promise<ModalFlag>((resolve) => {
           const instance = (
             <ModalProvider
