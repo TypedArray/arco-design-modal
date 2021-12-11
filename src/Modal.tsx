@@ -6,17 +6,18 @@ import {
 } from '@arco-design/web-react/icon';
 import React, {
   forwardRef,
-  ReactElement,
+  FunctionComponentElement,
   ReactNode,
   RefObject,
   useCallback,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
 } from 'react';
 import { Flag } from './Flag';
 import { ModalComponentProps } from './ModalComponentProps';
-import { ModalProvider } from './ModalContext';
+import { ModalProvider, ModalProviderProps } from './ModalContext';
 import { ModalProps } from './ModalProps';
 
 interface ModalRefProps {
@@ -24,6 +25,7 @@ interface ModalRefProps {
 }
 interface Modal {
   show(props: ModalProps & ModalRefProps, children?: ReactNode): Promise<Flag>;
+  clear(): void;
   confirm(
     props: ModalProps & ModalRefProps,
     children?: ReactNode
@@ -61,10 +63,12 @@ interface Modal {
 const Modal = Object.assign(
   forwardRef<Modal, ModalProps>((props, ref) => {
     const keyRef = useRef(0);
-    const [children, setChildren] = useState<ReactElement[]>([]);
-    const open = useCallback(
+    const [elements, setElements] = useState<
+      FunctionComponentElement<ModalProviderProps>[]
+    >([]);
+    const internalShow = useCallback(
       (
-        modalProps?: ModalProps & ModalRefProps,
+        modalProps: ModalProps & ModalRefProps,
         children?: ReactNode
       ): Promise<Flag> => {
         return new Promise<Flag>((resolve) => {
@@ -74,29 +78,37 @@ const Modal = Object.assign(
               {...props}
               {...modalProps}
               children={children ?? modalProps?.children ?? props?.children}
-              ref={modalProps?.ref}
               onResolve={resolve}
               onExited={() => {
-                setChildren((children) =>
-                  children.filter((child) => child !== instance)
+                setElements((elements) =>
+                  elements.filter((element) => element !== instance)
                 );
               }}
             />
           );
-          setChildren((children) => children.concat(instance));
+          setElements((elements) => elements.concat(instance));
         });
       },
-      [setChildren]
+      [elements]
     );
+    const clear = useCallback(() => {
+      elements.forEach((element) => {
+        element.props.onResolve?.(Flag.CLOSE);
+      });
+      setElements([]);
+    }, [elements]);
+    const length = useMemo(() => elements.length, [elements]);
     useImperativeHandle(
       ref,
       () => {
         return {
+          length,
+          clear,
           show: (
             modalProps: ModalProps & ModalRefProps,
             children?: ReactNode
           ) =>
-            open(
+            internalShow(
               {
                 flags: Flag.OK | Flag.CANCEL | Flag.CLOSE,
                 ...modalProps,
@@ -107,7 +119,7 @@ const Modal = Object.assign(
             modalProps: ModalProps & ModalRefProps,
             children?: ReactNode
           ) =>
-            open(
+            internalShow(
               {
                 flags: Flag.OK | Flag.CANCEL | Flag.CLOSE,
                 icon: <IconExclamationCircleFill />,
@@ -120,8 +132,9 @@ const Modal = Object.assign(
             modalProps: ModalProps & ModalRefProps,
             children?: ReactNode
           ) =>
-            open(
+            internalShow(
               {
+                flags: Flag.OK,
                 icon: <IconInfoCircleFill />,
                 simple: true,
                 ...modalProps,
@@ -132,8 +145,9 @@ const Modal = Object.assign(
             modalProps: ModalProps & ModalRefProps,
             children?: ReactNode
           ) =>
-            open(
+            internalShow(
               {
+                flags: Flag.OK,
                 icon: <IconCheckCircleFill />,
                 simple: true,
                 ...modalProps,
@@ -144,8 +158,9 @@ const Modal = Object.assign(
             modalProps: ModalProps & ModalRefProps,
             children?: ReactNode
           ) =>
-            open(
+            internalShow(
               {
+                flags: Flag.OK,
                 icon: <IconExclamationCircleFill />,
                 simple: true,
                 ...modalProps,
@@ -156,8 +171,9 @@ const Modal = Object.assign(
             modalProps: ModalProps & ModalRefProps,
             children?: ReactNode
           ) =>
-            open(
+            internalShow(
               {
+                flags: Flag.OK,
                 icon: <IconCloseCircleFill />,
                 simple: true,
                 ...modalProps,
@@ -166,9 +182,9 @@ const Modal = Object.assign(
             ),
         };
       },
-      [open]
+      [internalShow, clear, length]
     );
-    return <>{children}</>;
+    return <>{elements}</>;
   }),
   {
     /**

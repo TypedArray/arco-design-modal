@@ -213,6 +213,39 @@ export const Error = () => {
     </>
   );
 };
+export const Clear = () => {
+  const modalRef = useRef<Modal>(null);
+  const onClick = useCallback(async () => {
+    modalRef.current?.show({
+      simple: true,
+      title: '路由表更新失败！',
+      content: '路由表包含无效的路由转发策略公网网关的网络',
+      flags: [Modal.YES, Modal.NO, Modal.OK, Modal.CANCEL],
+    });
+    modalRef.current?.show({
+      simple: true,
+      title: '路由表更新失败！',
+      content: '路由表包含无效的路由转发策略公网网关的网络',
+      flags: [Modal.YES, Modal.NO, Modal.OK, Modal.CANCEL],
+    });
+    modalRef.current?.show({
+      simple: true,
+      title: '路由表更新失败！',
+      content: '路由表包含无效的路由转发策略公网网关的网络',
+      flags: [Modal.YES, Modal.NO, Modal.OK, Modal.CANCEL],
+      onClose: () => {
+        modalRef.current?.clear();
+      },
+    });
+  }, []);
+  return (
+    <>
+      <Button onClick={onClick}>Show</Button>
+
+      <Modal ref={modalRef} />
+    </>
+  );
+};
 export const OrderedFlags = () => {
   const modalRef = useRef<Modal>(null);
   const onClick = useCallback(async () => {
