@@ -103,48 +103,27 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
           : Boolean(flags & ModalFlag.CLOSE),
       [flags]
     );
-    // 按钮排序
-    const orderedFlags = useMemo(
-      () =>
-        Array.isArray(flags)
-          ? flags
-          : [
-              ModalFlag.CANCEL,
-              ModalFlag.OK,
-              ModalFlag.NO,
-              ModalFlag.YES,
-            ].filter((flag) => flags & flag),
-      [flags]
-    );
-
-    const buttonPropsCache = useMemo(
-      () =>
-        new Map<ModalFlag, Omit<ButtonProps, 'onClick'>>([
-          [
-            ModalFlag.OK,
-            Object.assign({ children: okLabel, type: 'primary' }, okProps),
-          ],
-          [
-            ModalFlag.CANCEL,
-            Object.assign({ children: cancelLabel }, cancelProps),
-          ],
-          [ModalFlag.YES, Object.assign({ children: yesLabel }, yesProps)],
-          [ModalFlag.NO, Object.assign({ children: noLabel }, noProps)],
-        ]),
-      [
-        okLabel,
-        okProps,
-        cancelLabel,
-        cancelProps,
-        yesLabel,
-        yesProps,
-        noLabel,
-        noProps,
-      ]
-    );
     const buttons = useMemo(() => {
+      const buttonPropsMap = new Map<ModalFlag, Omit<ButtonProps, 'onClick'>>([
+        [ModalFlag.YES, Object.assign({ children: yesLabel }, yesProps)],
+        [ModalFlag.NO, Object.assign({ children: noLabel }, noProps)],
+        [
+          ModalFlag.OK,
+          Object.assign({ children: okLabel, type: 'primary' }, okProps),
+        ],
+        [
+          ModalFlag.CANCEL,
+          Object.assign({ children: cancelLabel }, cancelProps),
+        ],
+      ]);
+      // 按钮排序
+      const orderedFlags = Array.isArray(flags)
+        ? flags
+        : [ModalFlag.YES, ModalFlag.NO, ModalFlag.OK, ModalFlag.CANCEL].filter(
+            (flag) => flags & flag
+          );
       const orderedElements = orderedFlags.map((flag) => {
-        const buttonProps = buttonPropsCache.get(flag);
+        const buttonProps = buttonPropsMap.get(flag);
         return (
           <ModalFlagButton
             key={flag}
@@ -155,11 +134,24 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
           />
         );
       });
+      // 展示方向
       if (direction === 'rtl') {
         orderedElements.reverse();
       }
       return orderedElements;
-    }, [loadingFlag, orderedFlags, buttonPropsCache, direction]);
+    }, [
+      okLabel,
+      okProps,
+      cancelLabel,
+      cancelProps,
+      yesLabel,
+      yesProps,
+      noLabel,
+      noProps,
+      loadingFlag,
+      flags,
+      direction,
+    ]);
 
     const onModalClose = useCallback(() => onFlag(ModalFlag.CLOSE), [onFlag]);
     const onModalExited = useCallback(
