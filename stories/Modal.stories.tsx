@@ -280,6 +280,25 @@ export const OrderedFlags = () => {
   );
 };
 
+export const Direction = () => {
+  const modalRef = useRef<Modal>(null);
+  const onClick = useCallback(async () => {
+    await modalRef.current?.show({
+      simple: true,
+      title: '路由表更新失败！',
+      content: '路由表包含无效的路由转发策略公网网关的网络',
+      flags: [Modal.YES, Modal.NO, Modal.OK, Modal.CANCEL],
+      direction: 'rtl',
+    });
+  }, []);
+  return (
+    <>
+      <Button onClick={onClick}>按钮排序</Button>
+      <Modal ref={modalRef} />
+    </>
+  );
+};
+
 const meta: Meta = {
   title: 'Modal',
 };

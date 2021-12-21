@@ -17,6 +17,7 @@ export interface ModalProps
   children?: ReactNode;
   /** 需要展示哪些按钮 */
   flags?: ModalFlag | ModalFlag[];
+  direction?: 'ltr' | 'rtl';
   yesLabel?: string;
   noLabel?: string;
   okLabel?: string;

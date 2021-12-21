@@ -38,6 +38,7 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
       content,
       children,
       flags = ModalFlag.OK,
+      direction = 'ltr',
       yesLabel = '是',
       noLabel = '否',
       okLabel = '确定',
@@ -141,22 +142,24 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
         noProps,
       ]
     );
-    const buttons = useMemo(
-      () =>
-        orderedFlags.map((flag) => {
-          const buttonProps = buttonPropsCache.get(flag);
-          return (
-            <ModalFlagButton
-              key={flag}
-              {...buttonProps}
-              flag={flag}
-              onFlag={onFlag}
-              loading={Boolean(loadingFlag & flag)}
-            />
-          );
-        }),
-      [loadingFlag, orderedFlags, buttonPropsCache]
-    );
+    const buttons = useMemo(() => {
+      const orderedElements = orderedFlags.map((flag) => {
+        const buttonProps = buttonPropsCache.get(flag);
+        return (
+          <ModalFlagButton
+            key={flag}
+            {...buttonProps}
+            flag={flag}
+            onFlag={onFlag}
+            loading={Boolean(loadingFlag & flag)}
+          />
+        );
+      });
+      if (direction === 'rtl') {
+        orderedElements.reverse();
+      }
+      return orderedElements;
+    }, [loadingFlag, orderedFlags, buttonPropsCache, direction]);
 
     const onModalClose = useCallback(() => onFlag(ModalFlag.CLOSE), [onFlag]);
     const onModalExited = useCallback(
