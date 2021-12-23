@@ -13,7 +13,9 @@ import { ModalFlagButton } from './ModalFlagButton';
 import { ModalProps } from './ModalProps';
 import { shakeX } from './shakeX';
 
-const ModalContext = React.createContext<ModalComponentProps | null>(null);
+const ModalContext = React.createContext<ModalComponentProps>(
+  null as unknown as ModalComponentProps
+);
 const { Consumer: ModalConsumer, Provider } = ModalContext;
 
 export interface ModalProviderProps extends ModalProps {
