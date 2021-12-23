@@ -78,6 +78,37 @@ modalRef.current?.confirm({
 
 5. 其他用法，支持 `show` `confirm` `info` `success` `warning` `error`
 
+6. `innerRef` 可以获取到 `children` 数据状态
+
+```jsx
+const InnerComponent = () => {
+  const { innerRef } = useContext(ModalContext);
+  const [state, setState] = useState(0);
+  useEffect(() => {
+    innerRef.current = state;
+  }, [state]);
+  return (
+    <>
+      {state}
+      <button onClick={() => setState(state - 1)}>-</button>
+      <button onClick={() => setState(state + 1)}>+</button>
+    </>
+  );
+};
+
+modalRef.current?.show(
+  {
+    title: '标题',
+    onClose: async (flag, innerRef) => {
+      if (flag & Modal.OK) {
+        console.log('OK', innerRef.current);
+      }
+    },
+  },
+  <InnerComponent />
+);
+```
+
 ## Props 属性参数
 
 - `icon` 标题前的图标

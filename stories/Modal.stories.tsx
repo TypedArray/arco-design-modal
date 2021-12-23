@@ -2,7 +2,6 @@ import { Alert, Button, List, Space } from '@arco-design/web-react';
 import '@arco-design/web-react/dist/css/arco.css';
 import { Meta } from '@storybook/react';
 import React, {
-  forwardRef,
   useCallback,
   useContext,
   useEffect,
@@ -287,28 +286,25 @@ export const OrderedFlags = () => {
   );
 };
 
-const InnerRefComponent = forwardRef(() => {
-  const context = useContext(ModalContext);
+const InnerComponent = () => {
+  const { innerRef } = useContext(ModalContext);
   const [state, setState] = useState(0);
-
   useEffect(() => {
-    context.innerRef.current = {
-      state,
-    };
+    innerRef.current = state;
   }, [state]);
-
   return (
-    <div>
+    <>
+      {state}
       <button onClick={() => setState(state - 1)}>-</button>
       <button onClick={() => setState(state + 1)}>+</button>
-      {state}
-    </div>
+    </>
   );
-});
+};
 
 interface InnerRefType {
   state: number;
 }
+
 export const InnerRef = () => {
   const modalRef = useRef<Modal>(null);
   const onClick = useCallback(async () => {
@@ -325,7 +321,7 @@ export const InnerRef = () => {
           }
         },
       },
-      <InnerRefComponent />
+      <InnerComponent />
     );
   }, []);
   return (
