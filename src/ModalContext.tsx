@@ -13,10 +13,7 @@ import { ModalFlagButton } from './ModalFlagButton';
 import { ModalProps } from './ModalProps';
 import { shakeX } from './shakeX';
 
-const ModalContext = React.createContext<Pick<
-  ModalComponentProps,
-  'close'
-> | null>(null);
+const ModalContext = React.createContext<ModalComponentProps | null>(null);
 const { Consumer: ModalConsumer, Provider } = ModalContext;
 
 export interface ModalProviderProps extends ModalProps {
@@ -56,6 +53,7 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
     ref
   ) {
     const containerRef = useRef<Element>();
+    const innerRef = useRef<unknown>();
     const flagRef = useRef<ModalFlag>();
     const [visible, setVisible] = useState<boolean>(true);
     const [loadingFlag, setLoadingFlag] = useState(ModalFlag.NONE);
@@ -63,7 +61,7 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
       async (flag: ModalFlag) => {
         setLoadingFlag(flag);
         if (typeof onClose === 'function') {
-          const pFlag = await onClose(flag);
+          const pFlag = await onClose(flag, innerRef);
           // 如果返回了新的 pFlag 那就使用新的
           if (typeof pFlag === 'number') {
             flag = pFlag;
@@ -90,6 +88,7 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
     const modalComponentProps = useMemo(
       () => ({
         close: (flag: ModalFlag = ModalFlag.CLOSE) => onFlag(flag),
+        innerRef,
       }),
       [onFlag]
     );

@@ -1,3 +1,4 @@
+import { MutableRefObject } from 'react';
 import { ModalFlag } from './ModalFlag';
 
 export interface ModalComponentProps {
@@ -6,4 +7,6 @@ export interface ModalComponentProps {
    * @param flag
    */
   close(flag?: ModalFlag): PromiseLike<void>;
+
+  readonly innerRef: MutableRefObject<unknown>;
 }

@@ -2,10 +2,10 @@ import {
   ButtonProps,
   ModalProps as ArcoModalProps,
 } from '@arco-design/web-react';
-import { ReactNode } from 'react';
+import { ReactNode, RefObject } from 'react';
 import { ModalFlag } from './ModalFlag';
 
-export interface ModalProps
+export interface ModalProps<T = unknown>
   extends Omit<
     ArcoModalProps,
     'footer' | 'visible' | 'closable' | 'onOk' | 'onConfirm' | 'onCancel'
@@ -30,6 +30,7 @@ export interface ModalProps
    * 点选确认/取消/是/否按钮时触发，可以返回新的 flag
    */
   onClose?: (
-    flag: ModalFlag
+    flag: ModalFlag,
+    innerRef: RefObject<T>
   ) => ModalFlag | void | PromiseLike<ModalFlag | void>;
 }

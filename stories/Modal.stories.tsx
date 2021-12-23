@@ -1,8 +1,15 @@
 import { Alert, Button, List, Space } from '@arco-design/web-react';
 import '@arco-design/web-react/dist/css/arco.css';
 import { Meta } from '@storybook/react';
-import React, { useCallback, useRef } from 'react';
-import { Modal, ModalComponentProps } from '../src';
+import React, {
+  forwardRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { Modal, ModalComponentProps, ModalContext } from '../src';
 
 export const Default = () => {
   const modalRef = useRef<Modal>(null);
@@ -280,6 +287,54 @@ export const OrderedFlags = () => {
   );
 };
 
+const InnerRefComponent = forwardRef(() => {
+  const context = useContext(ModalContext);
+  const [state, setState] = useState(0);
+
+  useEffect(() => {
+    context.innerRef.current = {
+      state,
+    };
+  }, [state]);
+
+  return (
+    <div>
+      <button onClick={() => setState(state - 1)}>-</button>
+      <button onClick={() => setState(state + 1)}>+</button>
+      {state}
+    </div>
+  );
+});
+
+interface InnerRefType {
+  state: number;
+}
+export const InnerRef = () => {
+  const modalRef = useRef<Modal>(null);
+  const onClick = useCallback(async () => {
+    await modalRef.current?.show<InnerRefType>(
+      {
+        simple: true,
+        title: '路由表更新失败！',
+        onClose: async (flag, innerRef) => {
+          if (flag & Modal.OK) {
+            console.log('====================================');
+            console.log('OK', innerRef.current);
+            console.log('====================================');
+            return Modal.REJECT;
+          }
+        },
+      },
+      <InnerRefComponent />
+    );
+  }, []);
+  return (
+    <>
+      <Button onClick={onClick}>InnerRef</Button>
+      <Modal ref={modalRef} />
+    </>
+  );
+};
 export const Direction = () => {
   const modalRef = useRef<Modal>(null);
   const onClick = useCallback(async () => {

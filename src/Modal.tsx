@@ -24,30 +24,30 @@ interface ModalRefProps {
   ref?: RefObject<ModalComponentProps>;
 }
 interface Modal {
-  show(
-    props: ModalProps & ModalRefProps,
+  show<T = unknown>(
+    props: ModalProps<T> & ModalRefProps,
     children?: ReactNode
   ): PromiseLike<ModalFlag>;
   size: number;
   clear(): void;
-  confirm(
-    props: ModalProps & ModalRefProps,
+  confirm<T = unknown>(
+    props: ModalProps<T> & ModalRefProps,
     children?: ReactNode
   ): PromiseLike<ModalFlag>;
-  info(
-    props: ModalProps & ModalRefProps,
+  info<T = unknown>(
+    props: ModalProps<T> & ModalRefProps,
     children?: ReactNode
   ): PromiseLike<ModalFlag>;
-  success(
-    props: ModalProps & ModalRefProps,
+  success<T = unknown>(
+    props: ModalProps<T> & ModalRefProps,
     children?: ReactNode
   ): PromiseLike<ModalFlag>;
-  warning(
-    props: ModalProps & ModalRefProps,
+  warning<T = unknown>(
+    props: ModalProps<T> & ModalRefProps,
     children?: ReactNode
   ): PromiseLike<ModalFlag>;
-  error(
-    props: ModalProps & ModalRefProps,
+  error<T = unknown>(
+    props: ModalProps<T> & ModalRefProps,
     children?: ReactNode
   ): PromiseLike<ModalFlag>;
 }
