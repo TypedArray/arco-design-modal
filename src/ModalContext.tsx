@@ -152,6 +152,7 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
       loadingFlag,
       flags,
       direction,
+      onFlag,
     ]);
 
     const onModalClose = useCallback(() => onFlag(ModalFlag.CLOSE), [onFlag]);
