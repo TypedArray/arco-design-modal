@@ -8,5 +8,5 @@ export interface ModalComponentProps {
    */
   close(flag?: ModalFlag): PromiseLike<void>;
 
-  readonly innerRef: MutableRefObject<unknown>;
+  readonly forwardedRef: MutableRefObject<unknown>;
 }

@@ -55,7 +55,7 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
     ref
   ) {
     const containerRef = useRef<Element>();
-    const innerRef = useRef<unknown>();
+    const forwardedRef = useRef<unknown>();
     const flagRef = useRef<ModalFlag>();
     const [visible, setVisible] = useState<boolean>(true);
     const [loadingFlag, setLoadingFlag] = useState(ModalFlag.NONE);
@@ -63,7 +63,7 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
       async (flag: ModalFlag) => {
         setLoadingFlag(flag);
         if (typeof onClose === 'function') {
-          const pFlag = await onClose(flag, innerRef);
+          const pFlag = await onClose(flag, forwardedRef);
           // 如果返回了新的 pFlag 那就使用新的
           if (typeof pFlag === 'number') {
             flag = pFlag;
@@ -90,7 +90,7 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
     const modalComponentProps = useMemo(
       () => ({
         close: (flag: ModalFlag = ModalFlag.CLOSE) => onFlag(flag),
-        innerRef,
+        forwardedRef,
       }),
       [onFlag]
     );
