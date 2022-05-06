@@ -1,7 +1,7 @@
 import { MutableRefObject } from 'react';
 import { ModalFlag } from './ModalFlag';
 
-export interface ModalContextProps<T = unknown> {
+export interface ModalContextProps<T = any> {
   /**
    * 关闭弹窗
    * @param flag
