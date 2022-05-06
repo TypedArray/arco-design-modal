@@ -14,7 +14,7 @@ import { ModalProps } from './ModalProps';
 import { shakeX } from './shakeX';
 
 const ModalContext = React.createContext<ModalContextProps>(
-  null as unknown as ModalContextProps
+  null as any as ModalContextProps
 );
 const { Consumer: ModalConsumer, Provider } = ModalContext;
 
