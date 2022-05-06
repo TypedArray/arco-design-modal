@@ -15,13 +15,13 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { ModalComponentProps } from './ModalComponentProps';
 import { ModalProvider, ModalProviderProps } from './ModalContext';
+import { ModalContextProps } from './ModalContextProps';
 import { ModalFlag } from './ModalFlag';
 import { ModalProps } from './ModalProps';
 
 interface ModalRefProps {
-  ref?: RefObject<ModalComponentProps>;
+  ref?: RefObject<ModalContextProps>;
 }
 interface Modal {
   show<T = unknown>(

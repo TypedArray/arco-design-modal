@@ -7,14 +7,14 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { ModalComponentProps } from './ModalComponentProps';
+import { ModalContextProps } from './ModalContextProps';
 import { ModalFlag } from './ModalFlag';
 import { ModalFlagButton } from './ModalFlagButton';
 import { ModalProps } from './ModalProps';
 import { shakeX } from './shakeX';
 
-const ModalContext = React.createContext<ModalComponentProps>(
-  null as unknown as ModalComponentProps
+const ModalContext = React.createContext<ModalContextProps>(
+  null as unknown as ModalContextProps
 );
 const { Consumer: ModalConsumer, Provider } = ModalContext;
 
@@ -29,7 +29,7 @@ export interface ModalProviderProps extends ModalProps {
 /**
  * 弹框 Provider
  */
-const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
+const ModalProvider = forwardRef<ModalContextProps, ModalProviderProps>(
   function (
     {
       title,
@@ -87,7 +87,7 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
     );
 
     // 允许 Context 关闭弹窗
-    const modalComponentProps = useMemo(
+    const ModalContextProps = useMemo(
       () => ({
         close: (flag: ModalFlag = ModalFlag.CLOSE) => onFlag(flag),
         forwardedRef,
@@ -95,7 +95,7 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
       [onFlag]
     );
     // 允许 ref 关闭弹窗
-    useImperativeHandle(ref, () => modalComponentProps, [modalComponentProps]);
+    useImperativeHandle(ref, () => ModalContextProps, [ModalContextProps]);
 
     const closable = useMemo(
       () =>
@@ -162,7 +162,7 @@ const ModalProvider = forwardRef<ModalComponentProps, ModalProviderProps>(
     );
 
     return (
-      <Provider value={modalComponentProps}>
+      <Provider value={ModalContextProps}>
         <ArcoModal
           {...remainingProps}
           // @ts-ignore

@@ -31,6 +31,6 @@ export interface ModalProps<T = unknown>
    */
   onClose?: (
     flag: ModalFlag,
-    innerRef: RefObject<T>
+    forwardedRef: RefObject<T>
   ) => ModalFlag | void | PromiseLike<ModalFlag | void>;
 }
